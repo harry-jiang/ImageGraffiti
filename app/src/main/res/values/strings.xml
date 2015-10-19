@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">美心图片</string>
+    <string name="no_found">没有找到图片哦</string>
+    <string name="intr_title">软件介绍</string>
+    <string name="introduction"> 美心图片是一款操作简单，使用方便的图片处理软件。它提供了对图片进行裁剪、旋转、缩放、反转、调色、边框、涂鸦、特效处理等操作，最后可以将处理后的图片保存到手机本地存储中。软件界面友好，功能一目了然，响应速度快，最最重要的是提供了很多的称心如意的功能哦！还在犹豫什么快来体验吧！   </string>
+    <string name="edit">编辑</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="crop">裁剪</string>
+    <string name="rotate">旋转</string>
+    <string name="rotate_left">向左旋转</string>
+    <string name="rotate_right">向右旋转</string>
+    <string name="reverse_transform">反转</string>
+    <string name="resize">缩放</string>
+    <string name="tone">调色</string>
+    <string name="saturation">饱和度</string>
+    <string name="lightness">亮度</string>
+    <string name="contrast">色相</string>
+    <string name="contr">对比度</string>
+    <string name="frame_doodle">边框涂鸦</string>
+    <string name="frame">边框</string>
+    <string name="doodle">涂鸦</string>
+    <string name="running_face_detection">请稍等</string>
+    <string name="multiface_crop_help">"轻点一张脸开始裁剪。"</string>
+    <string name="saving_image">"正在保存照片"</string>
+    <string name="choose_img">请选择图片</string>
+    <string name="load_failure">图片加载失败</string>
+    <string name="resize_one_to_two">½</string>
+    <string name="resize_one_to_three"> ⅓</string>
+    <string name="resize_one_to_four">¼</string>
+    <string name="resize_two_to_one">2</string>
+    <string name="save_bitmap">正在保存图片</string>
+    <string name="specific">特效</string>
+    <string name="handling">处理中，请稍候</string>
+    <string name="album_name">CameraSample</string>
+    <!-- 相册名 -->
+    <string-array name="specific_item">
+        <item>怀旧</item>
+        <item>模糊</item>
+        <item>锐化</item>
+        <item>叠加</item>
+        <item>底片</item>
+        <item>浮雕</item>
+        <item>光照</item>
+        <item>霓虹</item>
+        <item>重叠</item>
+        <item>切割</item>
+    </string-array>
+</resources>
