@@ -6,7 +6,11 @@
     <!-- 在SDCard中创建与删除文件权限 -->
     <use-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <use-permission android:name="android.permission.RESTART_PACKAGES" />
+    <!-- 添加sdcard权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-feature android:name="android.hardware.camera" />
+    <!-- 提示要拍照功能 -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

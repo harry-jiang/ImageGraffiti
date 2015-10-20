@@ -71,11 +71,6 @@ public class HomeActivity extends Activity implements TurnplateView.OnTurnplateL
         try {
             f = FileUtils.createImageFile();
             mCurrentPhotoPath = f.getAbsolutePath();
-            /*String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
-			f = new  File(Environment.getExternalStorageDirectory()+"/dcim/"+
-					imageFileName+JPEG_FILE_SUFFIX);*/
-            mCurrentPhotoPath = f.getAbsolutePath();
             tpIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
         } catch (Exception e) {
             e.printStackTrace();

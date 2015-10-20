@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/layout_save1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:visibility="gone">
+        android:padding="10dp">
 
         <Button
             android:id="@+id/btn_save1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="35dip"
             android:layout_alignParentRight="true"
             android:background="@drawable/btn_bg_selector"
             android:drawableRight="@android:drawable/ic_menu_save"
@@ -27,7 +27,7 @@
         <Button
             android:id="@+id/btn_cancel1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="35dip"
             android:background="@drawable/btn_bg_selector"
             android:drawableLeft="@android:drawable/ic_menu_revert"
             android:onClick="onClick"
@@ -44,7 +44,8 @@
         android:id="@+id/layout_save2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/btn_save2"
@@ -83,9 +84,9 @@
 
         <view
             android:id="@+id/crop_image"
-            class="com.jacp.image.view.CropImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            class="com.qian.imagegraffiti.view.CropImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center" />
 
     </LinearLayout>
@@ -100,54 +101,68 @@
 
         <Button
             android:id="@+id/edit"
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:background="@null"
             android:drawableTop="@drawable/btn_edit"
+            android:gravity="center"
             android:onClick="onClick"
-            android:text="@string/edit" />
+            android:padding="10dp"
+            android:text="@string/edit"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/tone"
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:background="@null"
             android:drawableTop="@drawable/btn_color"
+            android:gravity="center"
             android:onClick="onClick"
-
-            android:text="@string/tone" />
+            android:padding="10dp"
+            android:text="@string/tone"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/frame"
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:background="@null"
             android:drawableTop="@drawable/btn_frame"
+            android:gravity="center"
             android:onClick="onClick"
-            android:text="@string/frame" />
+            android:padding="10dp"
+            android:text="@string/frame"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/myDoodle"
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:background="@null"
             android:drawableTop="@drawable/content_edit"
+            android:gravity="center"
             android:onClick="onClick"
-            android:text="@string/doodle" />
+            android:padding="10dp"
+            android:text="@string/doodle"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/mySpecial"
-            android:layout_width="60dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:background="@null"
             android:drawableTop="@drawable/rating_favorite"
+            android:gravity="center"
             android:onClick="onClick"
-            android:text="@string/specific" />
+            android:padding="10dp"
+            android:text="@string/specific"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
