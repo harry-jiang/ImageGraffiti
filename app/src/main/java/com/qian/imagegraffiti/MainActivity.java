@@ -11,12 +11,17 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.qian.imagegraffiti.animation.ReverseAnimation;
 import com.qian.imagegraffiti.utils.BitmapUtils;
@@ -35,6 +40,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Stack;
 
 /**
  * Created by jqian on 2015/10/19.
@@ -81,10 +87,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     private static final String IMAGE_MIME_TYPE = "image/jpg";
     private static final Uri STORAGE_URI = Images.Media.EXTERNAL_CONTENT_URI;
 
-    //顶部布局区域2：默认进入
-    private View mSaveAll;
-    //顶部布局区域1：当进行图像处理时
-    private View mSaveStep;
 
     private final int STATE_CROP = 0x1;
     private final int STATE_DOODLE = STATE_CROP << 1;
@@ -175,6 +177,12 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     //反转
     private final int[] EDIT_REVERSE = new int[]{R.mipmap.btn_rotate_horizontalrotate, R.mipmap.btn_rotate_verticalrotate};
 
+    //------------------------------------
+    private View mSaveAll, mSaveStep, layout_buttom, layout_menu_edit, layout_menu_resize, layout_menu_rotate, layout_menu_reverse;
+
+    private Stack<View> menuStack;
+
+    Animation anim_in, anim_out;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +193,8 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         setContentView(R.layout.image_main);
         initView();
         initData();
+        menuStack = new Stack<View>();
+        showAfterMenuView(layout_buttom);
     }
 
     private void initView() {
@@ -192,8 +202,15 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         mSaveAll = findViewById(R.id.layout_save1);
         //顶部布局区域1：当进行图像处理时
         mSaveStep = findViewById(R.id.layout_save2);
+        layout_buttom = findViewById(R.id.layout_buttom);
+        layout_menu_edit = findViewById(R.id.layout_menu_edit);
+        layout_menu_resize = findViewById(R.id.layout_menu_resize);
+        layout_menu_rotate = findViewById(R.id.layout_menu_rotate);
+        layout_menu_reverse = findViewById(R.id.layout_menu_reverse);
         //用于显示当前操作的名称
         handle_name = (TextView) findViewById(R.id.handle_name);
+        anim_in = AnimationUtils.loadAnimation(this, R.anim.anim_down_in);
+        anim_out = AnimationUtils.loadAnimation(this, R.anim.anim_down_out);
     }
 
     private void initData() {
@@ -285,7 +302,8 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 resetToOriginal();
                 return;
             case R.id.edit:
-                flag = FLAG_EDIT;
+                //flag = FLAG_EDIT;
+                showAfterMenuView(layout_menu_edit);
                 break;
             case R.id.tone:
                 initTone();
@@ -303,7 +321,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 return;
         }
 
-     //   initMenu(flag);
+        //   initMenu(flag);
     }
 
     private String saveBitmap(Bitmap bm) {
@@ -418,21 +436,21 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
             case FLAG_EDIT_REVERSE: // 反转
                 mSecondaryListMenu.setImageRes(EDIT_REVERSE);
                 //mSecondaryListMenu.setHeight(80);
-          //      mSecondaryListMenu.setOnMenuClickListener(reverseListener());
+                //      mSecondaryListMenu.setOnMenuClickListener(reverseListener());
                 break;
             case FLAG_FRAME_ADD: // 添加边框
                 //mSecondaryListMenu.setWidth(400);
                 mSecondaryListMenu.setImageRes(FRAME_ADD_IMAGES);
                 mSecondaryListMenu.setMargin(180);
                 mSecondaryListMenu.setBtmMargin(55);
-            //    mSecondaryListMenu.setOnMenuClickListener(addFrameListener());
+                //    mSecondaryListMenu.setOnMenuClickListener(addFrameListener());
                 break;
             case FLAG_FRAME_DOODLE: // 涂鸦
                 mSecondaryListMenu.setImageRes(FRAME_DOODLE);
                 mSecondaryListMenu.setMargin(180);
                 mSecondaryListMenu.setBtmMargin(55);
                 //mSecondaryListMenu.setText(DOODLE_TEXTS);
-         //       mSecondaryListMenu.setOnMenuClickListener(doodleListener());
+                //       mSecondaryListMenu.setOnMenuClickListener(doodleListener());
                 break;
             case FLAG_FRAME_SPECIFIC: // 特效
                 mSecondaryListMenu.setWidth(420);
@@ -440,7 +458,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 mSecondaryListMenu.setMargin(80);
                 mSecondaryListMenu.setBtmMargin(55);
                 mSecondaryListMenu.setText(getResources().getStringArray(R.array.specific_item));
-         //       mSecondaryListMenu.setOnMenuClickListener(specificListener());
+                //       mSecondaryListMenu.setOnMenuClickListener(specificListener());
                 break;
         }
 
@@ -504,13 +522,13 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 }
 
                 // 一级菜单隐藏
-           //     mMenuView.hide();
+                //     mMenuView.hide();
                 showSaveStep();
             }
 
             @Override
             public void hideMenu() {
-           //     dismissSecondaryMenu();
+                //     dismissSecondaryMenu();
             }
 
         };
@@ -542,15 +560,15 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                         break;
                 }
 
-            //    resize(scale);
+                //    resize(scale);
                 // 一级菜单隐藏
-             //   mMenuView.hide();
+                //   mMenuView.hide();
                 showSaveStep();
             }
 
             @Override
             public void hideMenu() {
-               // dismissSecondaryMenu();
+                // dismissSecondaryMenu();
             }
 
         };
@@ -558,10 +576,10 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     /**
      * 旋转
+     *
      * @param degree
      */
-    private void rotate(float degree)
-    {
+    private void rotate(float degree) {
         // 未进入特殊状态
         mImageViewWidth = mImageView.getWidth();
         mImageViewHeight = mImageView.getHeight();
@@ -572,5 +590,88 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         mTmpBmp = bm;
 
         reset();
+    }
+
+    public void onEditMenuClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_menu_crop:
+                // showAfterMenuView();
+                break;
+            case R.id.btn_menu_rotate:
+                showAfterMenuView(layout_menu_rotate);
+                break;
+            case R.id.btn_menu_resize:
+                showAfterMenuView(layout_menu_resize);
+                break;
+            case R.id.btn_menu_reverse_transform:
+                showAfterMenuView(layout_menu_reverse);
+                break;
+        }
+    }
+
+    public void onResizeMenuClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_resize_one_to_two:
+                break;
+            case R.id.btn_resize_one_to_three:
+                break;
+            case R.id.btn_resize_one_to_four:
+                break;
+            case R.id.btn_resize_two_to_one:
+                break;
+        }
+        startAnimationOut(layout_menu_resize);
+    }
+
+
+    private void showAfterMenuView(View view) {
+        if (view == null) {
+            return;
+        }
+        if (!menuStack.empty()) {
+            View topView = menuStack.peek();
+            startAnimationOut(topView);
+        }
+
+        startAnimationIn(view);
+        menuStack.push(view);
+    }
+
+    private void startAnimationIn(View view) {
+        view.clearAnimation();
+        view.startAnimation(anim_in);
+        view.setVisibility(View.VISIBLE);
+    }
+
+    private void startAnimationOut(View view) {
+        view.clearAnimation();
+        view.startAnimation(anim_out);
+        view.setVisibility(view == layout_buttom ? View.INVISIBLE : View.GONE);
+    }
+
+    private boolean showBeforeMenuView() {
+        if (menuStack.size() > 1) {
+            View topView = menuStack.peek();
+            if (topView.getVisibility() != View.GONE) {
+                startAnimationOut(topView);
+                menuStack.pop();
+            }
+        } else {
+            return false;
+        }
+        View topView = menuStack.peek();
+        startAnimationIn(topView);
+        return true;
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                showBeforeMenuView();
+                return true;
+
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 }

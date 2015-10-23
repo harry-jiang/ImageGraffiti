@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 顶部布局区域1：当进行图像处理时 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_save2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <Button
+        android:id="@+id/btn_save2"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentRight="true"
+        android:background="@mipmap/ic_success"
+        android:onClick="onClick" />
+
+    <TextView
+        android:id="@+id/handle_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/btn_cancel2"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentLeft="true"
+        android:background="@mipmap/ic_close"
+        android:onClick="onClick" />
+
+</RelativeLayout><!-- 顶部布局区域2：默认进入 -->
+
+

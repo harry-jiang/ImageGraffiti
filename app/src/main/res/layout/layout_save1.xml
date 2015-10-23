@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_save1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <Button
+        android:id="@+id/btn_cancel1"
+        android:layout_width="wrap_content"
+        android:layout_height="35dip"
+        android:background="@drawable/btn_bg_selector"
+        android:drawableLeft="@android:drawable/ic_menu_revert"
+        android:onClick="onClick"
+        android:paddingRight="5dp"
+        android:text="@string/cancel"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/btn_save1"
+        android:layout_width="wrap_content"
+        android:layout_height="35dip"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/btn_bg_selector"
+        android:drawableRight="@android:drawable/ic_menu_save"
+        android:onClick="onClick"
+        android:paddingLeft="5dp"
+        android:text="@string/save"
+        android:textColor="#ffffff" />
+
+
+</RelativeLayout>
+

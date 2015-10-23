@@ -1,103 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:orientation="vertical">
+    android:background="#000000">
 
     <RelativeLayout
-        android:id="@+id/layout_save1"
+        android:id="@+id/rl_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:layout_alignParentTop="true">
 
-        <Button
-            android:id="@+id/btn_save1"
-            android:layout_width="wrap_content"
-            android:layout_height="35dip"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/btn_bg_selector"
-            android:drawableRight="@android:drawable/ic_menu_save"
-            android:onClick="onClick"
-            android:text="@string/save"
-            android:textColor="#ffffff"
-
-            />
-
-        <Button
-            android:id="@+id/btn_cancel1"
-            android:layout_width="wrap_content"
-            android:layout_height="35dip"
-            android:background="@drawable/btn_bg_selector"
-            android:drawableLeft="@android:drawable/ic_menu_revert"
-            android:onClick="onClick"
-            android:text="@string/cancel"
-            android:textColor="#ffffff"
-
-            />
-
-    </RelativeLayout>
-
-
-    <!-- 顶部布局区域1：当进行图像处理时 -->
-    <RelativeLayout
-        android:id="@+id/layout_save2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:visibility="gone">
-
-        <Button
-            android:id="@+id/btn_save2"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_alignParentRight="true"
-            android:background="@mipmap/ic_success"
-            android:onClick="onClick" />
-
-        <TextView
-            android:id="@+id/handle_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textColor="#ffffff" />
-
-        <Button
-            android:id="@+id/btn_cancel2"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_alignParentLeft="true"
-            android:background="@mipmap/ic_close"
-            android:onClick="onClick" />
-
-    </RelativeLayout>
-    <!-- 顶部布局区域2：默认进入 -->
-
-
-    <!-- 中间图片区域布局 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <view
-            android:id="@+id/crop_image"
-            class="com.qian.imagegraffiti.view.CropImageView"
+        <include
+            layout="@layout/layout_save1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:layout_height="wrap_content" />
 
-    </LinearLayout>
+        <include
+            layout="@layout/layout_save2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </RelativeLayout>
+
+
+    <view
+        android:id="@+id/crop_image"
+        class="com.qian.imagegraffiti.view.CropImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_buttom"
+        android:layout_below="@+id/rl_top" />
 
     <!-- 底部区域布局 -->
     <LinearLayout
+        android:id="@+id/layout_buttom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:scrollbars="horizontal">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/edit"
@@ -166,4 +108,32 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <include
+        layout="@layout/menu_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/menu_edit_resize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/menu_edit_reverse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/menu_edit_rotate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

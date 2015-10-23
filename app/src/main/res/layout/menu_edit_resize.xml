@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_menu_resize"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/btn_resize_one_to_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_menu_bg_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onResizeMenuClick"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="38dip"
+            android:layout_height="38dip"
+            android:background="@mipmap/face1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/resize_one_to_two"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_resize_one_to_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_menu_bg_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onResizeMenuClick"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="38dip"
+            android:layout_height="38dip"
+            android:background="@mipmap/face2" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/resize_one_to_three"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_resize_one_to_four"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_menu_bg_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onResizeMenuClick"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="38dip"
+            android:layout_height="38dip"
+            android:background="@mipmap/face3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/resize_one_to_four"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_resize_two_to_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_menu_bg_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onResizeMenuClick"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="38dip"
+            android:layout_height="38dip"
+            android:background="@mipmap/face4" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/resize_two_to_one"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+
+</LinearLayout>
+

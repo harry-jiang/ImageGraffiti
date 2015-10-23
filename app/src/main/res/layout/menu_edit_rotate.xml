@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_menu_rotate"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/btn_rotate_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_menu_bg_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onRotateMenuClick"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="38dip"
+            android:layout_height="38dip"
+            android:background="@mipmap/ic_menu_rotate_left" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rotate_left"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_rotate_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_menu_bg_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onRotateMenuClick"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="38dip"
+            android:layout_height="38dip"
+            android:background="@mipmap/ic_menu_rotate_right" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rotate_right"
+            android:textColor="#aaffffff"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+
+</LinearLayout>
+
