@@ -419,11 +419,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         mSecondaryListMenu.setWidth(300);
         mSecondaryListMenu.setMargin(left);
         switch (flag) {
-            case FLAG_EDIT_ROTATE: // 旋转
-                mSecondaryListMenu.setImageRes(ROTATE_IMGRES);
-                mSecondaryListMenu.setText(ROTATE_TEXTS);
-                mSecondaryListMenu.setOnMenuClickListener(rotateListener());
-                break;
 
             case FLAG_EDIT_REVERSE: // 反转
                 mSecondaryListMenu.setImageRes(EDIT_REVERSE);
@@ -494,36 +489,52 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     }
 
+    public void onEditMenuClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_menu_crop://剪裁
+                crop();
+                handle_name.setText(R.string.crop);
+                layout_menu_edit.setVisibility(View.GONE);
+                break;
+            case R.id.btn_menu_rotate://旋转
+                showAfterMenuView(layout_menu_rotate);
+                break;
+            case R.id.btn_menu_resize://缩放
+                showAfterMenuView(layout_menu_resize);
+                handle_name.setText(R.string.resize);
+                break;
+            case R.id.btn_menu_reverse_transform://翻转
+                showAfterMenuView(layout_menu_reverse);
+                handle_name.setText(R.string.reverse_transform);
+                break;
+        }
+        showSaveStep();
+    }
+
     /**
-     * 二级菜单中的旋转事件
-     *
-     * @return
+     * 裁剪
      */
-    private OnMenuClickListener rotateListener() {
-        return new OnMenuClickListener() {
-            @Override
-            public void onMenuItemClick(AdapterView<?> parent, View view,
-                                        int position) {
-                switch (position) {
-                    case 0: // 左旋转
-                        rotate(-90);
-                        break;
-                    case 1: // 右旋转
-                        rotate(90);
-                        break;
-                }
+    private void crop() {
+        // 进入裁剪状态
+        prepare(STATE_CROP, CropImageView.STATE_HIGHLIGHT, false);
+        mEditImage.crop(mTmpBmp);
+        reset();
+    }
 
-                // 一级菜单隐藏
-                //     mMenuView.hide();
-                showSaveStep();
-            }
-
-            @Override
-            public void hideMenu() {
-                //     dismissSecondaryMenu();
-            }
-
-        };
+    /**
+     * 旋转
+     *
+     * @param view
+     */
+    public void onRotateMenuClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_rotate_left: // 左旋转
+                rotate(-90);
+                break;
+            case R.id.btn_rotate_right: // 右旋转
+                rotate(90);
+                break;
+        }
     }
 
     /**
@@ -535,45 +546,8 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         // 未进入特殊状态
         mImageViewWidth = mImageView.getWidth();
         mImageViewHeight = mImageView.getHeight();
-
-//        prepare(STATE_NONE, CropImageView.STATE_NONE, true);
-//        mShowHandleName.setText(R.string.rotate);
         Bitmap bm = mEditImage.rotate(mTmpBmp, degree);
         mTmpBmp = bm;
-
-        reset();
-    }
-
-    public void onEditMenuClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_menu_crop:
-                crop();
-                handle_name.setText(R.string.crop);
-                layout_menu_edit.setVisibility(View.GONE);
-                showSaveStep();
-                break;
-            case R.id.btn_menu_rotate:
-                showAfterMenuView(layout_menu_rotate);
-                break;
-            case R.id.btn_menu_resize:
-                showAfterMenuView(layout_menu_resize);
-                handle_name.setText(R.string.resize);
-                showSaveStep();
-                break;
-            case R.id.btn_menu_reverse_transform:
-                showAfterMenuView(layout_menu_reverse);
-                break;
-        }
-    }
-
-    /**
-     * 裁剪
-     */
-    private void crop()
-    {
-        // 进入裁剪状态
-        prepare(STATE_CROP, CropImageView.STATE_HIGHLIGHT, false);
-        mEditImage.crop(mTmpBmp);
         reset();
     }
 
@@ -588,19 +562,19 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         switch (view.getId()) {
             case R.id.btn_resize_one_to_two:
                 scale /= 2;
-                title = title+ getString(R.string.resize_one_to_two);
+                title = title + getString(R.string.resize_one_to_two);
                 break;
             case R.id.btn_resize_one_to_three:
                 scale /= 3;
-                title = title+ getString(R.string.resize_one_to_three);
+                title = title + getString(R.string.resize_one_to_three);
                 break;
             case R.id.btn_resize_one_to_four:
                 scale /= 4;
-                title = title+ getString(R.string.resize_one_to_four);
+                title = title + getString(R.string.resize_one_to_four);
                 break;
             case R.id.btn_resize_two_to_one:
                 scale *= 2;
-                title = title+ getString(R.string.resize_two_to_one);
+                title = title + getString(R.string.resize_two_to_one);
                 break;
         }
         resize(scale, title);
@@ -609,7 +583,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     /**
      * 缩放
      */
-    private void resize(float scale,String title) {
+    private void resize(float scale, String title) {
         // 未进入特殊状态
         prepare(STATE_NONE, CropImageView.STATE_NONE, true);
         handle_name.setText(title);
@@ -618,7 +592,53 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         reset();
     }
 
+    /**
+     * 翻转
+     *
+     * @param view
+     */
+    public void onReverseMenuClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_rotate_horizontalrotate: // 水平翻转
+                reverse(ReverseAnimation.HORIZONTAL);
+                break;
+            case R.id.btn_rotate_verticalrotate: // 垂直翻转
+                reverse(ReverseAnimation.VERTICAL);
+                break;
+        }
+    }
 
+    private void reverse(int flag)
+    {
+        // 未进入特殊状态
+        prepare(STATE_REVERSE, CropImageView.STATE_NONE, true);
+
+        int type = 0;
+        switch (flag)
+        {
+            case 0:
+                type = ReverseAnimation.HORIZONTAL;
+                break;
+            case 1:
+                type = ReverseAnimation.VERTICAL;
+                break;
+        }
+
+        mReverseAnim = new ReverseAnimation(0F, 180F, mImageViewWidth == 0 ? mImageView.getWidth() / 2 : mImageViewWidth / 2, mImageViewHeight == 0 ? mImageView.getHeight() / 2 : mImageViewHeight / 2, 0, true);
+        mReverseAnim.setReverseType(type);
+        mReverseAnim.setDuration(1000);
+        mReverseAnim.setFillEnabled(true);
+        mReverseAnim.setFillAfter(true);
+        mImageView.startAnimation(mReverseAnim);
+        Bitmap bm = mEditImage.reverse(mTmpBmp, flag);
+        mTmpBmp = bm;
+//		reset();
+    }
+
+    /**
+     * 显示下一级菜单
+     * @param view
+     */
     private void showAfterMenuView(View view) {
         if (view == null) {
             return;
@@ -632,12 +652,19 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         menuStack.push(view);
     }
 
+    /**
+     * 菜单显示动画
+     * @param view
+     */
     private void startAnimationIn(View view) {
         view.clearAnimation();
         view.startAnimation(anim_in);
         view.setVisibility(View.VISIBLE);
     }
-
+    /**
+     * 菜单消失动画
+     * @param view
+     */
     private void startAnimationOut(View view) {
         view.clearAnimation();
         view.startAnimation(anim_out);
@@ -646,6 +673,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     /**
      * 显示上一级菜单
+     *
      * @return
      */
     private boolean showBeforeMenuView() {
