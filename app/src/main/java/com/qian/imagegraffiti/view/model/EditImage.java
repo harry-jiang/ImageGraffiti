@@ -225,27 +225,6 @@ public class EditImage
         return croppedImage;
     }
 
-    /*public String saveToLocal(Bitmap bm)
-    {
-    	String path = "/sdcard/mm.jpg";
-    	try
-		{
-			FileOutputStream fos = new FileOutputStream(path);
-			bm.compress(CompressFormat.JPEG, 75, fos);
-			fos.flush();
-			fos.close();
-		} catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-			return null;
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-			return null;
-		}
-		
-		return path;
-    }*/
 
     private void showProgressDialog(String msg, Runnable job, Handler handler)
     {

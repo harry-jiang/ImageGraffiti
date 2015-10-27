@@ -163,9 +163,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     private final int[] ROTATE_IMGRES = new int[]{R.mipmap.ic_menu_rotate_left, R.mipmap.ic_menu_rotate_right};
     private final int[] ROTATE_TEXTS = new int[]{R.string.rotate_left, R.string.rotate_right};
 
-    //缩放
-    private final int[] RESIZE_TEXTS = new int[]{R.string.resize_one_to_two, R.string.resize_one_to_three, R.string.resize_one_to_four, R.string.resize_two_to_one};
-    private final int[] RESIZE_IMAGES = new int[]{R.mipmap.face1, R.mipmap.face2, R.mipmap.face3, R.mipmap.face4};
     //添加边框
     private final int[] FRAME_ADD_IMAGES = new int[]{R.drawable.frame_around1, R.drawable.frame_around2, R.mipmap.frame_small1};
 
@@ -173,7 +170,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     private final int[] FRAME_DOODLE = new int[]{R.mipmap.btn_handwrite, R.mipmap.cloudy, R.mipmap.xiaoku, R.mipmap.xiaohong,
             R.mipmap.huzi, R.mipmap.tuer, R.mipmap.ali1, R.mipmap.ali2,
     };
-    //private final int[] DOODLE_TEXTS = new int[] { R.string.hand_write_tip };
     //反转
     private final int[] EDIT_REVERSE = new int[]{R.mipmap.btn_rotate_horizontalrotate, R.mipmap.btn_rotate_verticalrotate};
 
@@ -287,6 +283,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 mEditImage.mSaving = true;
                 mImageViewWidth = mImageView.getWidth();
                 mImageViewHeight = mImageView.getHeight();
+                showBeforeMenuView();
                 return;
             case R.id.btn_cancel2:
                 if (mState == STATE_CROP) {
@@ -300,9 +297,9 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 }
                 showSaveAll();
                 resetToOriginal();
+                showBeforeMenuView();
                 return;
             case R.id.edit:
-                //flag = FLAG_EDIT;
                 showAfterMenuView(layout_menu_edit);
                 break;
             case R.id.tone:
@@ -367,13 +364,13 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     private void showSaveStep() {
-        mSaveStep.setVisibility(View.VISIBLE);
-        mSaveAll.setVisibility(View.GONE);
+        startAnimationIn(mSaveStep);
+        startAnimationOut(mSaveAll);
     }
 
     private void showSaveAll() {
-        mSaveStep.setVisibility(View.GONE);
-        mSaveAll.setVisibility(View.VISIBLE);
+        startAnimationIn(mSaveAll);
+        startAnimationOut(mSaveStep);
     }
 
     /**
@@ -427,12 +424,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 mSecondaryListMenu.setText(ROTATE_TEXTS);
                 mSecondaryListMenu.setOnMenuClickListener(rotateListener());
                 break;
-            case FLAG_EDIT_RESIZE: // 缩放
-                mSecondaryListMenu.setImageRes(RESIZE_IMAGES);
-                mSecondaryListMenu.setText(RESIZE_TEXTS);
-                mSecondaryListMenu.setTextSize(20);
-                mSecondaryListMenu.setOnMenuClickListener(resizeListener());
-                break;
+
             case FLAG_EDIT_REVERSE: // 反转
                 mSecondaryListMenu.setImageRes(EDIT_REVERSE);
                 //mSecondaryListMenu.setHeight(80);
@@ -535,46 +527,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     /**
-     * 二级菜单中的缩放事件
-     *
-     * @return
-     */
-    private OnMenuClickListener resizeListener() {
-        return new OnMenuClickListener() {
-            @Override
-            public void onMenuItemClick(AdapterView<?> parent, View view,
-                                        int position) {
-                float scale = 1.0F;
-                switch (position) {
-                    case 0: // 1:2
-                        scale /= 2;
-                        break;
-                    case 1: // 1:3
-                        scale /= 3;
-                        break;
-                    case 2: // 1:4
-                        scale /= 4;
-                        break;
-                    case 3:// 2:1
-                        scale *= 2;
-                        break;
-                }
-
-                //    resize(scale);
-                // 一级菜单隐藏
-                //   mMenuView.hide();
-                showSaveStep();
-            }
-
-            @Override
-            public void hideMenu() {
-                // dismissSecondaryMenu();
-            }
-
-        };
-    }
-
-    /**
      * 旋转
      *
      * @param degree
@@ -595,13 +547,18 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     public void onEditMenuClick(View view) {
         switch (view.getId()) {
             case R.id.btn_menu_crop:
-                // showAfterMenuView();
+                crop();
+                handle_name.setText(R.string.crop);
+                layout_menu_edit.setVisibility(View.GONE);
+                showSaveStep();
                 break;
             case R.id.btn_menu_rotate:
                 showAfterMenuView(layout_menu_rotate);
                 break;
             case R.id.btn_menu_resize:
                 showAfterMenuView(layout_menu_resize);
+                handle_name.setText(R.string.resize);
+                showSaveStep();
                 break;
             case R.id.btn_menu_reverse_transform:
                 showAfterMenuView(layout_menu_reverse);
@@ -609,18 +566,56 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         }
     }
 
+    /**
+     * 裁剪
+     */
+    private void crop()
+    {
+        // 进入裁剪状态
+        prepare(STATE_CROP, CropImageView.STATE_HIGHLIGHT, false);
+        mEditImage.crop(mTmpBmp);
+        reset();
+    }
+
+    /**
+     * 缩放
+     *
+     * @param view
+     */
     public void onResizeMenuClick(View view) {
+        String title = getString(R.string.resize);
+        float scale = 1.0F;
         switch (view.getId()) {
             case R.id.btn_resize_one_to_two:
+                scale /= 2;
+                title = title+ getString(R.string.resize_one_to_two);
                 break;
             case R.id.btn_resize_one_to_three:
+                scale /= 3;
+                title = title+ getString(R.string.resize_one_to_three);
                 break;
             case R.id.btn_resize_one_to_four:
+                scale /= 4;
+                title = title+ getString(R.string.resize_one_to_four);
                 break;
             case R.id.btn_resize_two_to_one:
+                scale *= 2;
+                title = title+ getString(R.string.resize_two_to_one);
                 break;
         }
-        startAnimationOut(layout_menu_resize);
+        resize(scale, title);
+    }
+
+    /**
+     * 缩放
+     */
+    private void resize(float scale,String title) {
+        // 未进入特殊状态
+        prepare(STATE_NONE, CropImageView.STATE_NONE, true);
+        handle_name.setText(title);
+        Bitmap bmp = mEditImage.resize(mTmpBmp, scale);
+        mTmpBmp = bmp;
+        reset();
     }
 
 
@@ -649,6 +644,10 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         view.setVisibility(view == layout_buttom ? View.INVISIBLE : View.GONE);
     }
 
+    /**
+     * 显示上一级菜单
+     * @return
+     */
     private boolean showBeforeMenuView() {
         if (menuStack.size() > 1) {
             View topView = menuStack.peek();
@@ -662,6 +661,29 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         View topView = menuStack.peek();
         startAnimationIn(topView);
         return true;
+    }
+
+    /**
+     * 进行操作前的准备
+     *
+     * @param state          当前准备进入的操作状态
+     * @param imageViewState ImageView要进入的状态
+     * @param hideHighlight  是否隐藏裁剪框
+     */
+    private void prepare(int state, int imageViewState, boolean hideHighlight) {
+        resetToOriginal();
+        mEditImage.mSaving = false;
+        if (null != mReverseAnim) {
+            mReverseAnim.cancel();
+            mReverseAnim = null;
+        }
+
+        if (hideHighlight) {
+            mImageView.hideHighlightView();
+        }
+        mState = state;
+        mImageView.setState(imageViewState);
+        mImageView.invalidate();
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
