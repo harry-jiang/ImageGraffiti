@@ -7,12 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-/**
- * Author       : yanbo
- * Date         : 2015-06-02
- * Time         : 10:15
- * Description  :
- */
 public class IntroduceActivity extends AppCompatActivity {
 
     @Override

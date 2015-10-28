@@ -2,6 +2,7 @@ package com.qian.imagegraffiti.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.File;
 
@@ -73,5 +74,21 @@ public class BitmapUtils {
         } else {
             return upperBound;
         }
+    }
+
+    public static Bitmap createBitmap(Bitmap bm) {
+        Bitmap bmp = null;
+        bmp = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), Bitmap.Config.ARGB_8888);
+        if (bmp == null) {
+            Log.d("wsh", "bmp为空 ARGB_8888");
+            bmp = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), Bitmap.Config.ARGB_4444);
+            if (bmp == null) {
+                bmp = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), Bitmap.Config.ALPHA_8);
+                if (bmp == null) {
+                    bmp = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), Bitmap.Config.RGB_565);
+                }
+            }
+        }
+        return bmp;
     }
 }

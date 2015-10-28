@@ -17,23 +17,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.SeekBar;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.qian.imagegraffiti.animation.ReverseAnimation;
 import com.qian.imagegraffiti.utils.BitmapUtils;
 import com.qian.imagegraffiti.utils.FileUtils;
+import com.qian.imagegraffiti.utils.ToneView;
 import com.qian.imagegraffiti.view.CropImageView;
-import com.qian.imagegraffiti.view.menu.OnMenuClickListener;
-import com.qian.imagegraffiti.view.menu.SecondaryListMenuView;
-import com.qian.imagegraffiti.view.menu.ToneMenuView;
 import com.qian.imagegraffiti.view.model.EditImage;
 import com.qian.imagegraffiti.view.model.ImageFrameAdder;
 import com.qian.imagegraffiti.view.model.ImageSpecific;
-import com.qian.imagegraffiti.view.model.ToneView;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -101,10 +95,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
      */
     private final int FLAG_TONE = 0x1;
     /**
-     * 边框
-     */
-    private final int FLAG_FRAME = FLAG_TONE + 1;
-    /**
      * 添加边框
      */
     private final int FLAG_FRAME_ADD = FLAG_TONE + 6;
@@ -117,35 +107,9 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
      */
     private final int FLAG_FRAME_SPECIFIC = FLAG_TONE + 10;
     /**
-     * 编辑
-     */
-    private final int FLAG_EDIT = FLAG_TONE + 2;
-    /**
-     * 裁剪
-     */
-    private final int FLAG_EDIT_CROP = FLAG_TONE + 3;
-    /**
-     * 旋转
-     */
-    private final int FLAG_EDIT_ROTATE = FLAG_TONE + 4;
-    /**
-     * 缩放
-     */
-    private final int FLAG_EDIT_RESIZE = FLAG_TONE + 5;
-    /**
      * 反转
      */
     private final int FLAG_EDIT_REVERSE = FLAG_TONE + 8;
-    /**
-     * 手写涂鸦
-     */
-    private final int FLAG_HAND_WRITING = FLAG_TONE + 9;
-
-    /**
-     * 调色菜单
-     */
-    private ToneMenuView mToneMenu;
-    private ToneView mToneView;
 
     /**
      * 反转动画
@@ -154,16 +118,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     private int mImageViewWidth;
     private int mImageViewHeight;
 
-    /**
-     * 二级菜单
-     */
-    private SecondaryListMenuView mSecondaryListMenu;
-
-    //旋转
-    private final int[] ROTATE_IMGRES = new int[]{R.mipmap.ic_menu_rotate_left, R.mipmap.ic_menu_rotate_right};
-    private final int[] ROTATE_TEXTS = new int[]{R.string.rotate_left, R.string.rotate_right};
-
-    //添加边框
+      //添加边框
     private final int[] FRAME_ADD_IMAGES = new int[]{R.drawable.frame_around1, R.drawable.frame_around2, R.mipmap.frame_small1};
 
     //涂鸦
@@ -174,12 +129,14 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     private final int[] EDIT_REVERSE = new int[]{R.mipmap.btn_rotate_horizontalrotate, R.mipmap.btn_rotate_verticalrotate};
 
     //------------------------------------
-    private View mSaveAll, mSaveStep, layout_buttom, layout_menu_edit, layout_menu_resize, layout_menu_rotate, layout_menu_reverse;
+    private View mSaveAll, mSaveStep, layout_buttom, layout_menu_edit, layout_menu_resize, layout_menu_rotate, layout_menu_reverse,layout_menu_tone,layout_menu_frame;
 
     private Stack<View> menuStack;
 
-    Animation anim_in, anim_out;
+    private SeekBar seekbar_contr,seekbar_saturation,seekbar_lightness,seekbar_contrast;
 
+    Animation anim_in, anim_out;
+    ToneView toneView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,6 +147,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         initView();
         initData();
         menuStack = new Stack<View>();
+        toneView = new ToneView();
         showAfterMenuView(layout_buttom);
     }
 
@@ -203,6 +161,16 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         layout_menu_resize = findViewById(R.id.layout_menu_resize);
         layout_menu_rotate = findViewById(R.id.layout_menu_rotate);
         layout_menu_reverse = findViewById(R.id.layout_menu_reverse);
+        layout_menu_tone = findViewById(R.id.layout_menu_tone);
+        layout_menu_frame = findViewById(R.id.layout_menu_frame);
+        seekbar_contr = (SeekBar)layout_menu_tone.findViewById(R.id.seekbar_contr);
+        seekbar_saturation = (SeekBar)layout_menu_tone.findViewById(R.id.seekbar_saturation);
+        seekbar_lightness=(SeekBar)layout_menu_tone.findViewById(R.id.seekbar_lightness);
+        seekbar_contrast = (SeekBar)layout_menu_tone.findViewById(R.id.seekbar_contrast);
+        seekbar_contr.setOnSeekBarChangeListener(this);
+        seekbar_saturation.setOnSeekBarChangeListener(this);
+        seekbar_lightness.setOnSeekBarChangeListener(this);
+        seekbar_contrast.setOnSeekBarChangeListener(this);
         //用于显示当前操作的名称
         handle_name = (TextView) findViewById(R.id.handle_name);
         anim_in = AnimationUtils.loadAnimation(this, R.anim.anim_down_in);
@@ -239,7 +207,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     }
 
     public void onClick(View v) {
-        int flag = -1;
         switch (v.getId()) {
             case R.id.btn_save1:
                 String path = saveBitmap(mBitmap);
@@ -270,7 +237,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                     mTmpBmp = mImageView.combinate();
                 } else if (mState == STATE_TONE) {
                     // 在菜单消失时要变调色状态为NONE状态
-                    mTmpBmp = mToneView.getBitmap();
+                    mTmpBmp = toneView.getResultBitmap();
                 } else if (mState == STATE_REVERSE) {
                     // 反转完成，要将ImageView反转，再设置图片
                     mReverseAnim.cancel();
@@ -303,22 +270,24 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 showAfterMenuView(layout_menu_edit);
                 break;
             case R.id.tone:
-                initTone();
+                mState = STATE_TONE;
+                toneView.setBitmap(mTmpBmp);
+                showAfterMenuView(layout_menu_tone);
                 showSaveStep();
                 return;
             case R.id.frame:
-                initSecondaryMenu(FLAG_FRAME_ADD, 11);
+                showSaveStep();
+                handle_name.setText(R.string.frame);
+                showAfterMenuView(layout_menu_frame);
                 return;
             case R.id.myDoodle:
-                flag = FLAG_FRAME_DOODLE;
-                initSecondaryMenu(FLAG_FRAME_DOODLE, 11);
+                //initSecondaryMenu(FLAG_FRAME_DOODLE, 11);
                 return;
             case R.id.mySpecial:
-                initSecondaryMenu(FLAG_FRAME_SPECIFIC, 11);
+               // initSecondaryMenu(FLAG_FRAME_SPECIFIC, 11);
                 return;
         }
 
-        //   initMenu(flag);
     }
 
     private String saveBitmap(Bitmap bm) {
@@ -390,91 +359,23 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         mImageView.mHighlightViews.clear();
     }
 
-    private void initTone() {
-        if (null == mToneMenu) {
-            mToneMenu = new ToneMenuView(this);
-        }
-
-        mToneMenu.show();
-
-        mState = STATE_TONE;
-
-        mToneView = mToneMenu.getToneView();
-        mToneMenu.setHueBarListener(this);
-        mToneMenu.setLumBarListener(this);
-        mToneMenu.setSaturationBarListener(this);
-        mToneMenu.setConBarListener(this);
-    }
-
-    /**
-     * 初始化二级菜单
-     *
-     * @param flag
-     * @param left
-     */
-    private void initSecondaryMenu(int flag, int left) {
-        mSecondaryListMenu = new SecondaryListMenuView(this);
-        mSecondaryListMenu.setBackgroundResource(R.drawable.popup_bottom_tip);
-        mSecondaryListMenu.setTextSize(16);
-        mSecondaryListMenu.setWidth(300);
-        mSecondaryListMenu.setMargin(left);
-        switch (flag) {
-
-            case FLAG_EDIT_REVERSE: // 反转
-                mSecondaryListMenu.setImageRes(EDIT_REVERSE);
-                //mSecondaryListMenu.setHeight(80);
-                //      mSecondaryListMenu.setOnMenuClickListener(reverseListener());
-                break;
-            case FLAG_FRAME_ADD: // 添加边框
-                //mSecondaryListMenu.setWidth(400);
-                mSecondaryListMenu.setImageRes(FRAME_ADD_IMAGES);
-                mSecondaryListMenu.setMargin(180);
-                mSecondaryListMenu.setBtmMargin(55);
-                //    mSecondaryListMenu.setOnMenuClickListener(addFrameListener());
-                break;
-            case FLAG_FRAME_DOODLE: // 涂鸦
-                mSecondaryListMenu.setImageRes(FRAME_DOODLE);
-                mSecondaryListMenu.setMargin(180);
-                mSecondaryListMenu.setBtmMargin(55);
-                //mSecondaryListMenu.setText(DOODLE_TEXTS);
-                //       mSecondaryListMenu.setOnMenuClickListener(doodleListener());
-                break;
-            case FLAG_FRAME_SPECIFIC: // 特效
-                mSecondaryListMenu.setWidth(420);
-                mSecondaryListMenu.setHeight(100);
-                mSecondaryListMenu.setMargin(80);
-                mSecondaryListMenu.setBtmMargin(55);
-                mSecondaryListMenu.setText(getResources().getStringArray(R.array.specific_item));
-                //       mSecondaryListMenu.setOnMenuClickListener(specificListener());
-                break;
-        }
-
-        mSecondaryListMenu.show();
-    }
-
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        int flag = -1;
-        switch ((Integer) seekBar.getTag()) {
-            case 1: // 饱和度
-                flag = 1;
-                mToneView.setSaturation(progress);
+        Bitmap bm = null;
+        switch ( seekBar.getId()) {
+            case R.id.seekbar_saturation: // 饱和度
+                bm = toneView.setSaturation(progress);
                 break;
-            case 2: // 色调
-                flag = 0;
-                mToneView.setHue(progress);
+            case R.id.seekbar_contrast: // 色调
+                bm = toneView.setHue(progress);
                 break;
-            case 3: // 亮度
-                flag = 2;
-                mToneView.setLum(progress);
+            case R.id.seekbar_lightness: // 亮度
+                bm = toneView.setLight(progress);
                 break;
-            case 4://对比度
-                flag = 3;
-                mToneView.setCon(progress);
+            case R.id.seekbar_contr://对比度
+                bm = toneView.setCon(progress);
                 break;
         }
-        Bitmap bm = mToneView.handleImage(mTmpBmp, flag);
-        //Bitmap bm = mToneView.handleImage(mBitmap, flag);
         mImageView.setImageBitmapResetBase(bm, true);
         mImageView.center(true, true);
     }
@@ -535,6 +436,42 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 rotate(90);
                 break;
         }
+    }
+
+    /**
+     * 边框
+     *
+     * @param view
+     */
+    public void onFrameMenuClick(View view) {
+        int flag = -1;
+        int res = 0;
+        switch (view.getId()) {
+            case R.id.btn_frame1:
+                flag = ImageFrameAdder.FRAME_SMALL;
+                res = 0;
+                break;
+            case R.id.btn_frame2:
+                flag = ImageFrameAdder.FRAME_SMALL;
+                res = 1;
+                break;
+            case R.id.btn_frame3:
+                flag = ImageFrameAdder.FRAME_BIG;
+                res = R.mipmap.frame_big1;
+                break;
+        }
+        addFrame(flag, res);
+    }
+
+    /**
+     * 添加边框
+     */
+    private void addFrame(int flag, int res)
+    {
+        // 未进入特殊状态
+        prepare(STATE_NONE, CropImageView.STATE_NONE, true);
+        mTmpBmp = mImageFrame.addFrame(flag, mBitmap, res);
+        reset();
     }
 
     /**

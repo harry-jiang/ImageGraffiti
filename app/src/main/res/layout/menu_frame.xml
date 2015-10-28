@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_menu_frame"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/btn_frame1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_menu_bg_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onFrameMenuClick"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <ImageView
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:background="@drawable/frame_around1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_frame2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_menu_bg_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onFrameMenuClick"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <ImageView
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:background="@drawable/frame_around2" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_frame3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_menu_bg_selector"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onFrameMenuClick"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <ImageView
+            android:layout_width="48dip"
+            android:layout_height="48dip"
+            android:background="@mipmap/frame_small1" />
+
+    </LinearLayout>
+</LinearLayout>
+
