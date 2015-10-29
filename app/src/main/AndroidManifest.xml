@@ -28,6 +28,7 @@
         </activity>
 
         <activity android:name=".IntroduceActivity"></activity>
+        <activity android:name=".ResultActivity"></activity>
         <activity android:name=".MainActivity"></activity>
     </application>
 

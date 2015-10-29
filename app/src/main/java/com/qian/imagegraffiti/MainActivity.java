@@ -199,9 +199,10 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                     mProgressDialog.dismiss();
                     mProgressDialog = null;
                 }
-//                Intent data = new Intent(this, ResultActivity.class);
-//                data.putExtra("path", path);
-//                startActivity(data);
+                Intent data = new Intent(this, ResultActivity.class);
+                data.putExtra("path", path);
+                startActivity(data);
+                finish();
                 return;
             case R.id.btn_cancel1:
                 //删除拍照保存原文件
@@ -255,7 +256,6 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 showAfterMenuView(layout_menu_frame);
                 return;
             case R.id.myDoodle:
-                //initSecondaryMenu(FLAG_FRAME_DOODLE, 11);
                 handle_name.setText(R.string.doodle);
                 showAfterMenuView(layout_menu_doodle);
                 showSaveStep();
