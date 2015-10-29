@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
@@ -91,52 +93,25 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     private int mState;
 
     /**
-     * 调色
-     */
-    private final int FLAG_TONE = 0x1;
-    /**
-     * 添加边框
-     */
-    private final int FLAG_FRAME_ADD = FLAG_TONE + 6;
-    /**
-     * 涂鸦
-     */
-    private final int FLAG_FRAME_DOODLE = FLAG_TONE + 7;
-    /**
-     * 特效
-     */
-    private final int FLAG_FRAME_SPECIFIC = FLAG_TONE + 10;
-    /**
-     * 反转
-     */
-    private final int FLAG_EDIT_REVERSE = FLAG_TONE + 8;
-
-    /**
      * 反转动画
      */
     private ReverseAnimation mReverseAnim;
     private int mImageViewWidth;
     private int mImageViewHeight;
 
-      //添加边框
-    private final int[] FRAME_ADD_IMAGES = new int[]{R.drawable.frame_around1, R.drawable.frame_around2, R.mipmap.frame_small1};
-
-    //涂鸦
-    private final int[] FRAME_DOODLE = new int[]{R.mipmap.btn_handwrite, R.mipmap.cloudy, R.mipmap.xiaoku, R.mipmap.xiaohong,
-            R.mipmap.huzi, R.mipmap.tuer, R.mipmap.ali1, R.mipmap.ali2,
-    };
-    //反转
-    private final int[] EDIT_REVERSE = new int[]{R.mipmap.btn_rotate_horizontalrotate, R.mipmap.btn_rotate_verticalrotate};
-
     //------------------------------------
-    private View mSaveAll, mSaveStep, layout_buttom, layout_menu_edit, layout_menu_resize, layout_menu_rotate, layout_menu_reverse,layout_menu_tone,layout_menu_frame;
+    private View mSaveAll, mSaveStep, layout_buttom, layout_menu_edit, layout_menu_resize, layout_menu_rotate, layout_menu_reverse, layout_menu_tone, layout_menu_frame, layout_menu_doodle, layout_menu_specific;
 
     private Stack<View> menuStack;
 
-    private SeekBar seekbar_contr,seekbar_saturation,seekbar_lightness,seekbar_contrast;
+    private SeekBar seekbar_contr, seekbar_saturation, seekbar_lightness, seekbar_contrast;
 
     Animation anim_in, anim_out;
     ToneView toneView;
+
+    private Handler mHandler = null;
+    private ProgressDialog mProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,6 +124,14 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         menuStack = new Stack<View>();
         toneView = new ToneView();
         showAfterMenuView(layout_buttom);
+        mHandler = new Handler()
+        {
+            public void handleMessage(Message msg)
+            {
+                closeProgress();
+                reset();
+            }
+        };
     }
 
     private void initView() {
@@ -163,10 +146,12 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         layout_menu_reverse = findViewById(R.id.layout_menu_reverse);
         layout_menu_tone = findViewById(R.id.layout_menu_tone);
         layout_menu_frame = findViewById(R.id.layout_menu_frame);
-        seekbar_contr = (SeekBar)layout_menu_tone.findViewById(R.id.seekbar_contr);
-        seekbar_saturation = (SeekBar)layout_menu_tone.findViewById(R.id.seekbar_saturation);
-        seekbar_lightness=(SeekBar)layout_menu_tone.findViewById(R.id.seekbar_lightness);
-        seekbar_contrast = (SeekBar)layout_menu_tone.findViewById(R.id.seekbar_contrast);
+        layout_menu_doodle = findViewById(R.id.layout_menu_doodle);
+        layout_menu_specific = findViewById(R.id.layout_menu_specific);
+        seekbar_contr = (SeekBar) layout_menu_tone.findViewById(R.id.seekbar_contr);
+        seekbar_saturation = (SeekBar) layout_menu_tone.findViewById(R.id.seekbar_saturation);
+        seekbar_lightness = (SeekBar) layout_menu_tone.findViewById(R.id.seekbar_lightness);
+        seekbar_contrast = (SeekBar) layout_menu_tone.findViewById(R.id.seekbar_contrast);
         seekbar_contr.setOnSeekBarChangeListener(this);
         seekbar_saturation.setOnSeekBarChangeListener(this);
         seekbar_lightness.setOnSeekBarChangeListener(this);
@@ -253,18 +238,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 showBeforeMenuView();
                 return;
             case R.id.btn_cancel2:
-                if (mState == STATE_CROP) {
-                    mEditImage.cropCancel();
-                } else if (mState == STATE_DOODLE) {
-                    mImageFrame.cancelCombinate();
-                } else if (mState == STATE_HAND_WRITE) {
-                    mTmpBmp = mImageView.cancelCombinate();
-                } else if (mState == STATE_REVERSE) {
-                    mReverseAnim.cancel();
-                }
-                showSaveAll();
-                resetToOriginal();
-                showBeforeMenuView();
+                cancel2BTN();
                 return;
             case R.id.edit:
                 showAfterMenuView(layout_menu_edit);
@@ -282,12 +256,32 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
                 return;
             case R.id.myDoodle:
                 //initSecondaryMenu(FLAG_FRAME_DOODLE, 11);
+                handle_name.setText(R.string.doodle);
+                showAfterMenuView(layout_menu_doodle);
+                showSaveStep();
                 return;
             case R.id.mySpecial:
-               // initSecondaryMenu(FLAG_FRAME_SPECIFIC, 11);
+                handle_name.setText(R.string.specific);
+                showAfterMenuView(layout_menu_specific);
+                showSaveStep();
                 return;
         }
 
+    }
+
+    private void cancel2BTN() {
+        if (mState == STATE_CROP) {
+            mEditImage.cropCancel();
+        } else if (mState == STATE_DOODLE) {
+            mImageFrame.cancelCombinate();
+        } else if (mState == STATE_HAND_WRITE) {
+            mTmpBmp = mImageView.cancelCombinate();
+        } else if (mState == STATE_REVERSE) {
+            mReverseAnim.cancel();
+        }
+        showSaveAll();
+        resetToOriginal();
+        showBeforeMenuView();
     }
 
     private String saveBitmap(Bitmap bm) {
@@ -362,7 +356,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         Bitmap bm = null;
-        switch ( seekBar.getId()) {
+        switch (seekBar.getId()) {
             case R.id.seekbar_saturation: // 饱和度
                 bm = toneView.setSaturation(progress);
                 break;
@@ -438,6 +432,88 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         }
     }
 
+    public void onSpecificMenuClick( View view)
+    {
+        int specFlag = -1;
+        switch (view.getId())
+        {
+            case R.id.btn_menu_specific_item1: // 怀旧效果
+                specFlag = ImageSpecific.FLAG_OLD_REMEMBER;
+                break;
+            case  R.id.btn_menu_specific_item2: // 模糊效果
+                specFlag = ImageSpecific.FLAG_BLUR;
+                break;
+            case  R.id.btn_menu_specific_item3: // 锐化效果
+                specFlag = ImageSpecific.FLAG_SHARPEN;
+                break;
+            case  R.id.btn_menu_specific_item4: // 像框叠加
+                specFlag = ImageSpecific.FLAG_OVERLAY;
+                break;
+            case  R.id.btn_menu_specific_item5: // 底片
+                specFlag = ImageSpecific.FLAG_FILM;
+                break;
+            case  R.id.btn_menu_specific_item6: // 浮雕
+                specFlag = ImageSpecific.FLAG_EMBOSS;
+                break;
+            case  R.id.btn_menu_specific_item7: // 光照效果
+                specFlag = ImageSpecific.FLAG_SUNSHINE;
+                break;
+            case  R.id.btn_menu_specific_item8: // 霓虹
+                specFlag = ImageSpecific.FLAG_NEON;
+                break;
+            case  R.id.btn_menu_specific_item9: // 叠加2
+                specFlag = ImageSpecific.FLAG_ALPHA_LAYER;
+                break;
+            case  R.id.btn_menu_specific_item10://切割图片
+                specFlag = ImageSpecific.FLAG_ALPHA_CROP;
+                break;
+        }
+        if(specFlag>-1){
+            imageSpecific(specFlag);
+        }
+
+    }
+
+    /**
+     * 特效处理
+     * @param flag
+     */
+    private void imageSpecific(final int flag)
+    {
+        prepare(STATE_NONE, CropImageView.STATE_NONE, true);
+        showProgress();
+        new Thread(new Runnable()
+        {
+            public void run()
+            {
+                mTmpBmp = mImageSpecific.imageSpecific(mTmpBmp, flag);
+                mHandler.sendEmptyMessage(0);
+            }
+        }).start();
+    }
+
+    /**
+     * 显示进度条
+     */
+    private void showProgress()
+    {
+        mProgress = ProgressDialog.show(this, null, getString(R.string.handling));
+        mProgress.show();
+        Log.d("may", "show Progress");
+    }
+
+    /**
+     * 关闭进度条
+     */
+    private void closeProgress()
+    {
+        if (null != mProgress)
+        {
+            mProgress.dismiss();
+            mProgress = null;
+        }
+    }
+
     /**
      * 边框
      *
@@ -466,8 +542,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
     /**
      * 添加边框
      */
-    private void addFrame(int flag, int res)
-    {
+    private void addFrame(int flag, int res) {
         // 未进入特殊状态
         prepare(STATE_NONE, CropImageView.STATE_NONE, true);
         mTmpBmp = mImageFrame.addFrame(flag, mBitmap, res);
@@ -545,14 +620,68 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         }
     }
 
-    private void reverse(int flag)
-    {
+    /**
+     * 涂鸦
+     *
+     * @param view
+     */
+    public void onDoodleMenuClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_doodle1:
+                // 手写涂鸦状态
+                mImageView.setState(CropImageView.STATE_HAND_WRITE);
+                handwrite(mTmpBmp, R.mipmap.btn_handwrite);
+                break;
+            case R.id.btn_doodle2:
+                doodle(R.mipmap.cloudy);
+                break;
+            case R.id.btn_doodle3:
+                doodle(R.mipmap.xiaoku);
+                break;
+            case R.id.btn_doodle4:
+                doodle(R.mipmap.xiaohong);
+                break;
+            case R.id.btn_doodle5:
+                doodle(R.mipmap.huzi);
+                break;
+            case R.id.btn_doodle6:
+                doodle(R.mipmap.tuer);
+                break;
+            case R.id.btn_doodle7:
+                doodle(R.mipmap.ali1);
+                break;
+            case R.id.btn_doodle8:
+                doodle(R.mipmap.ali2);
+                break;
+        }
+    }
+
+    /**
+     * 手写涂鸦
+     */
+    private void handwrite(Bitmap mTmpBmp, int res) {
+        // 进入手写涂鸦状态
+        prepare(STATE_HAND_WRITE, CropImageView.STATE_HAND_WRITE, true);
+        mImageFrame.doodleHanwrite(mTmpBmp);
+        reset();
+    }
+
+    /**
+     * 涂鸦
+     */
+    private void doodle(int res) {
+        // 进入涂鸦状态
+        prepare(STATE_DOODLE, CropImageView.STATE_DOODLE, true);
+        mImageFrame.doodle(res);
+        reset();
+    }
+
+    private void reverse(int flag) {
         // 未进入特殊状态
         prepare(STATE_REVERSE, CropImageView.STATE_NONE, true);
 
         int type = 0;
-        switch (flag)
-        {
+        switch (flag) {
             case 0:
                 type = ReverseAnimation.HORIZONTAL;
                 break;
@@ -574,6 +703,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     /**
      * 显示下一级菜单
+     *
      * @param view
      */
     private void showAfterMenuView(View view) {
@@ -591,6 +721,7 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
 
     /**
      * 菜单显示动画
+     *
      * @param view
      */
     private void startAnimationIn(View view) {
@@ -598,8 +729,10 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         view.startAnimation(anim_in);
         view.setVisibility(View.VISIBLE);
     }
+
     /**
      * 菜单消失动画
+     *
      * @param view
      */
     private void startAnimationOut(View view) {
@@ -655,6 +788,10 @@ public class MainActivity extends Activity implements SeekBar.OnSeekBarChangeLis
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
                 showBeforeMenuView();
+                if (mSaveStep.getVisibility() == View.VISIBLE && mSaveAll.getVisibility() == View.GONE) {
+                    showSaveAll();
+                    cancel2BTN();
+                }
                 return true;
 
         }

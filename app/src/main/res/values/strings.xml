@@ -46,4 +46,15 @@
         <item>重叠</item>
         <item>切割</item>
     </string-array>
+
+    <string name="specific_item1">怀旧</string>
+    <string name="specific_item2">模糊</string>
+    <string name="specific_item3">锐化</string>
+    <string name="specific_item4">叠加</string>
+    <string name="specific_item5">底片</string>
+    <string name="specific_item6">浮雕</string>
+    <string name="specific_item7">光照</string>
+    <string name="specific_item8">霓虹</string>
+    <string name="specific_item9">重叠</string>
+    <string name="specific_item10">切割</string>
 </resources>

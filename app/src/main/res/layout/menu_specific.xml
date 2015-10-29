@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_menu_specific"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item1"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item2"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item3"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item4"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item5"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item6"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item7"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item8"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item9"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_menu_specific_item10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_menu_bg_selector"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onSpecificMenuClick"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="1"
+                android:text="@string/specific_item10"
+                android:textColor="#aaffffff"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</HorizontalScrollView>
